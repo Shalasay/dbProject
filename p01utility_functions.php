@@ -74,7 +74,7 @@ function verify_session($sessionid, $formtype) {
   } 
   //oci_free_statement($cursor);
   
-  $sql = "select clienttype " .
+  $sql = "select aflag, sflag " .
 		"from p01users natural join p01myclientsession " .
 		"where sessionid = '$sessionid'";
 		
@@ -89,13 +89,13 @@ function verify_session($sessionid, $formtype) {
   else{
 	  if($values = oci_fetch_array($cursor)){
 		  if($formtype == 'admin'){
-			  if(strcasecmp((string)$values[0], 'admin') != 0 && strcasecmp((string)$values[0], 'stuadmin') != 0){
+			  if($values[0] != 1){
 				  echo $values[0] . " != " . $formtype . "<br>\n";
 				  die("Invalid Client! line 94 Click <A HREF = \"p01stuwelcomepage.php?sessionid=$sessionid\">here</A> to go back.");
 			  }
 		  }else if($formtype == 'stu'){
-			  if(strcasecmp((string)$values[0], 'stu') != 0 && strcasecmp((string)$values[0], 'stuadmin') != 0){
-				  echo $values[0];
+			  if($values[1] != 1){
+				  echo $values[1] . " != " . $formtype . "<br>\n";
 				  die("Invalid Client! line99 Click <A HREF = \"p01adminwelcomepage.php?sessionid=$sessionid\">here</A> to go back.");
 		  }
 	  }
