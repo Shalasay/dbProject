@@ -60,15 +60,13 @@ if($values = oci_fetch_array ($cursor)){
 	  die("SQL Execution problem.");
 	}else{
 	  if($values = oci_fetch_array($cursor)){
-		  if(strcasecmp($values[0] == 1 && $values[1] == 1){
+		  if($values[0] != 0 && $values[1] != 0){
 			  header("Location:p01stuadminwelcomepage.php?sessionid=$sessionid");
-		  }else if($values[0] == 0 && $values[1] == 1){
+		  }else if($values[0] =! 1 && $values[1] =! 0){
 			  header("Location:p01stuwelcomepage.php?sessionid=$sessionid");
-		  }else if($values[0] == 1 && &values[1] == 0){
+		  }else if($values[0] =! 0 && &values[1] =! 1){
 			  header("Location:p01adminwelcomepage.php?sessionid=$sessionid");
-		  }else{ 
-			  die ('Login failed.  Click <A href="p01login.html">here</A> to go back to the login page.');
-		}
+		  }
 	  }
 	}
   }
