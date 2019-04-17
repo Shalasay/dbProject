@@ -31,3 +31,4 @@ insert into p01users values ('b', 'b', 'stu');
 insert into p01users values ('c', 'c', 'stuadmin');
 commit;
 
+insert into p01student values ('123abc', 
