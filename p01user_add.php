@@ -24,7 +24,7 @@ echo("
   <input type=\"reset\" value=\"Reset\">
   </form>
 
-  <form method=\"post\" action=\"p01adminwelcomepage.php?sessionid=$sessionid\">
+  <form method=\"post\" action=\"p01manage.php?sessionid=$sessionid\">
   <input type=\"submit\" value=\"Go Back\">
   </form>");
 
