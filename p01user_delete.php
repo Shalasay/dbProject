@@ -7,7 +7,7 @@ verify_session($sessionid, $formtype);
 
 $q_clientid = $_GET["clientid"];
 
-$sql = "select clientid, password, clienttype from p01users where clientid = '$q_clientid'";
+$sql = "select clientid, password, aflag, sflag from p01users where clientid = '$q_clientid'";
 
 $result_array = execute_sql_in_oracle ($sql);
 $result = $result_array["flag"];
@@ -26,14 +26,16 @@ oci_free_statement($cursor);
 
 $clientid = $values[0];
 $password = $values[1];
-$clienttype = $values[2];
+$aflag = $values[2];
+$sflag = $values[3];
 
 // Display the tuple to be deleted
 echo("
   <form method=\"post\" action=\"p01user_delete_action.php?sessionid=$sessionid\">
-  Number (Read-only): <input type=\"text\" readonly value = \"$clientid\" name=\"clientid\"> <br /> 
-  Name: <input type=\"text\" disabled value = \"$password\" name=\"password\">  <br />
-  Location: <input type=\"text\" disabled value = \"$clienttype\" name=\"clienttype\">  <br />
+  User Name: <input type=\"text\" disabled value = \"$clientid\" name=\"clientid\"> <br /> 
+  Password: <input type=\"text\" disabled value = \"$password\" name=\"password\">  <br />
+  Admin Flag: <input type=\"text\" disabled value = \"$aflag\" name=\"aflag\">  <br />
+  Student Flag: <input type=\"text\" disabled value = \"$sflag\" name=\"sflag\">  <br />
   <input type=\"submit\" value=\"Delete\">
   </form>
 

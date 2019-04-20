@@ -9,10 +9,11 @@ verify_session($sessionid, $formtype);
 
 $clientid = $_POST["clientid"];
 $password = $_POST["password"];
-$clienttype = $_POST["clienttype"];
+$aflag = $_POST["aflag"];
+$sflag = $_POST["sflag"];
 
 // the sql string
-$sql = "insert into p01users values ('$clientid', '$password', '$clienttype')";
+$sql = "insert into p01users values ('$clientid', '$password', '$aflag', '$sflag')";
 //echo($sql);
 echo("<title>Add Success!</title>");
 $result_array = execute_sql_in_oracle ($sql);
@@ -30,7 +31,8 @@ if ($result == false){
 
   <input type=\"hidden\" value = \"$clientid\" name=\"clientid\">
   <input type=\"hidden\" value = \"$password\" name=\"password\">
-  <input type=\"hidden\" value = \"$clienttype\" name=\"clienttype\">
+  <input type=\"hidden\" value = \"$aflag\" name=\"aflag\">
+  <input type=\"hidden\" value = \"$sflag\" name=\"sflag\">
   
   Read the error message, and then try again:
   <input type=\"submit\" value=\"Go Back\">

@@ -4,16 +4,17 @@ drop table p01student cascade constraints;
 drop table p01section cascade constraints;
 
 create table p01users (
-clientid varchar2(8) primary key,
-password varchar2(12),
-clienttype varchar2(8)
+	clientid varchar2(8) primary key,
+	password varchar2(12),
+	aflag varchar2(1),
+	sflag varchar2(1)
 );
 
 create table p01myclientsession (
-sessionid varchar2(32) primary key,
-clientid varchar2(8),
-sessiondate date,
-foreign key (clientid) references p01users
+  sessionid varchar2(32) primary key,
+  clientid varchar2(8),
+  sessiondate date,
+  foreign key (clientid) references p01users ON DELETE CASCADE
 );
 
 create table p01student (
@@ -41,9 +42,11 @@ foreign key (clientid) references p01users
 
 
 
-insert into p01users values ('a', 'a', 'admin');
-insert into p01users values ('b', 'b', 'stu');
-insert into p01users values ('c', 'c', 'stuadmin');
+
+insert into p01users values ('a', 'a', '1', '0');
+insert into p01users values ('b', 'b', '0', '1');
+insert into p01users values ('c', 'c', '1', '1');
+commit;
 
 insert into p01student values ('stu001', 'John', 'Doe' , 20, '100 N University Dr, Edmond, OK 73034', 'Undergraduate', 'No' , 'b');
 insert into p01student values ('stu002', 'Joe', 'Dan' , 22, '100 N University Dr, Edmond, OK 73034', 'Undergraduate', 'Yes' , 'c');

@@ -10,7 +10,6 @@ $sql = "select clientid " .
        "where clientid='$clientid'
          and password ='$password'";
 
-
 $result_array = execute_sql_in_oracle ($sql);
 $result = $result_array["flag"];
 $cursor = $result_array["cursor"];
@@ -47,28 +46,34 @@ if($values = oci_fetch_array ($cursor)){
   else {
     // insert OK - we have created a new session
     //header("Location:p01welcomepage.php?sessionid=$sessionid");
-	$sql = "select clienttype " .
-		"from p01users natural join p01myclientsession " .
-		"where sessionid = '$sessionid'";
+	 $sql = "select aflag, sflag " .
+		 "from p01users natural join p01myclientsession " .
+		 "where sessionid = '$sessionid'";
 		
-	$result_array = execute_sql_in_oracle($sql);
-	$result = $result_array["flag"];
-	$cursor = $result_array["cursor"];
-	$result = oci_execute($cursor);
-	if($result == false){
-	  display_oracle_error_message($cursor);
-	  die("SQL Execution problem.");
-	}else{
-	  if($values = oci_fetch_array($cursor)){
-		  if(strcasecmp((string)$values[0], 'admin') == 0){
-			  header("Location:p01adminwelcomepage.php?sessionid=$sessionid");
-		  }else if(strcasecmp((string)$values[0], 'stu') == 0){
-			  header("Location:p01stuwelcomepage.php?sessionid=$sessionid");
-		  }else if(strcasecmp((string)$values[0], 'stuadmin') == 0){
-			  header("Location:p01stuadminwelcomepage.php?sessionid=$sessionid");
-		  }
-	  }
-	}
+	 $result_array = execute_sql_in_oracle($sql);
+	 $result = $result_array["flag"];
+	 $cursor = $result_array["cursor"];
+	 $result = oci_execute($cursor);
+	 if($result == false){
+	   display_oracle_error_message($cursor);
+	   die("SQL Execution problem.");
+	 }else{
+	   if($values = oci_fetch_array($cursor)){
+		   if($values[0] == 1){
+			   if($values[1] == 0){
+				   header("Location:p01adminwelcomepage.php?sessionid=$sessionid");
+			    }else{
+					header("Location:p01stuadminwelcomepage.php?sessionid=$sessionid");
+				}
+		   }else if($values[0] == 0){
+			   if($values[1] == 1){
+				   header("Location:p01stuwelcomepage.php?sessionid=$sessionid");
+				}else{
+					die ('Login failed.  Click <A href="p01login.html">here</A> to go back to the login page.');
+				}
+		   }
+	   }
+	 }
   }
 }
 else { 

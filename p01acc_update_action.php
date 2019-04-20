@@ -7,7 +7,8 @@ verify_session($sessionid, $formtype);
 
 $clientid = $_GET["clientid"];
 $pass = trim($_POST["pass"]);
-$type = $_POST["type"];
+$aflag = $_POST["aflag"];
+$sflag = $_POST["sflag"];
 
 	echo("<title>Change Success!</title>");
 
@@ -25,7 +26,7 @@ $sql = "select clientid " .
   }	
   else{
 	  if($values = oci_fetch_array($cursor)){
-		  $sql = "update p01users set password ='$pass', clienttype = '$type' where clientid = '$clientid'";
+		  $sql = "update p01users set password ='$pass', aflag = '$aflag', sflag = '$sflag' where clientid = '$clientid'";
 //echo($sql);
 
 $result_array = execute_sql_in_oracle ($sql);
@@ -45,7 +46,8 @@ if ($result == false){
   <input type=\"hidden\" value = \"1\" name=\"update_fail\">
   <input type=\"hidden\" value = \"$clientid\" name=\"clientid\">
   <input type=\"hidden\" value = \"$pass\" name=\"password\">
-  <input type=\"hidden\" value = \"$type\" name=\"client type\">
+  <input type=\"hidden\" value = \"$aflag\" name=\"admin flag\">
+  <input type=\"hidden\" value = \"$sflag\" name=\"student flag\">
   
   Read the error message, and then try again:
   <input type=\"submit\" value=\"Go Back\">
@@ -58,7 +60,8 @@ else{
 	echo("<h1>Update Successful </h1><br>");
 	echo("New CLIENT ID: $clientid <br>");
 	echo("New PASSWORD: $pass <br>");
-	echo("New Client Type: $type <br>");
+	echo("New Admin Flag: $aflag <br>");
+	echo("New Student Flag: $sflag <br>");
 // echo("SESSIONS ID: $sessionid <br>");	
 }
 	  }
@@ -84,7 +87,7 @@ $sql = "select clientid " .
 	  die("SQL Execution problem.");
   }	
   else{
-	  $sql = "select clienttype " .
+	  $sql = "select aflag, sflag " .
 		"from p01users natural join p01myclientsession " .
 		"where sessionid = '$sessionid'";
 		
@@ -97,22 +100,25 @@ $sql = "select clientid " .
 		die("SQL Execution problem.");
 		}	
 	  if($values = oci_fetch_array($cursor)){
-				if(strcasecmp((string)$values[0], 'admin') != 0 && strcasecmp((string)$values[0], 'stuadmin') != 0){
-				  echo("<FORM action=\"p01stuwelcomepage.php?sessionid=$sessionid\" name=\"Main Page \" method=\"POST\"> " .
-									"<INPUT type=\"submit\" name=\"btnSubmit\" value=\"Main Page\"> " .
-								"</FORM>"); 
-								}
-								else if(strcasecmp((string)$values[0], 'stu') != 0 && strcasecmp((string)$values[0], 'stuadmin') != 0){
-				  echo("<FORM action=\"p01adminwelcomepage.php?sessionid=$sessionid\" name=\"Main Page \" method=\"POST\"> " .
-									"<INPUT type=\"submit\" name=\"btnSubmit\" value=\"Main Page\"> " .
-								"</FORM>"); 
-				}	
-			else if(strcasecmp((string)$values[0], 'admin') != 0 && strcasecmp((string)$values[0], 'stu') != 0){
-				  echo("<FORM action=\"p01stuadminwelcomepage.php?sessionid=$sessionid\" name=\"Main Page \" method=\"POST\"> " .
-									"<INPUT type=\"submit\" name=\"btnSubmit\" value=\"Ok\"> " .
-								"</FORM>"); 
+				if($values[0] == 1){
+					if($values[1] == 1){
+						echo("<FORM action=\"p01stuadminwelcomepage.php?sessionid=$sessionid\" name=\"Main Page \" method=\"POST\"> " .
+					   "<INPUT type=\"submit\" name=\"btnSubmit\" value=\"Main Page\"> " .
+					   "</FORM>");
+					}else{
+						echo("<FORM action=\"p01adminwelcomepage.php?sessionid=$sessionid\" name=\"Main Page \" method=\"POST\"> " .
+					   "<INPUT type=\"submit\" name=\"btnSubmit\" value=\"Main Page\"> " .
+					   "</FORM>");
+					}
+				}else if($values[0] == 0){
+					if($values[1] == 1){
+						echo("<FORM action=\"p01stuwelcomepage.php?sessionid=$sessionid\" name=\"Main Page \" method=\"POST\"> " .
+					   "<INPUT type=\"submit\" name=\"btnSubmit\" value=\"Main Page\"> " .
+					   "</FORM>");
+					}else{
+						die ('An Error has occurred.  Click <A href="p01login.html">here</A> to go back to the login page.');
+					}
 				}
 		  }
-			 
-	}					
+	}			
 ?>
