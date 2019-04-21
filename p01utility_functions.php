@@ -11,7 +11,7 @@ function execute_sql_in_oracle($sql) {
   //putenv("ORACLE_HOME=/home/oracle/OraHome1");
   //putenv("ORACLE_SID=orcl");
 
-  $connection = oci_connect ("gq055", "ujkorp", "gqiannew2:1521/pdborcl");
+  $connection = oci_connect ("gq051", "nhmrse", "gqiannew2:1521/pdborcl");
   if($connection == false){
     // failed to connect
     display_oracle_error_message(null);
@@ -73,8 +73,12 @@ function verify_session($sessionid, $formtype) {
     die("Invalid client! line 73");
   } 
   //oci_free_statement($cursor);
-  
-  $sql = "select aflag, sflag " .
+  //************************************
+
+
+
+//*****************************************
+$sql = "select aflag, sflag " .
 		"from p01users natural join p01myclientsession " .
 		"where sessionid = '$sessionid'";
 		
@@ -93,7 +97,7 @@ function verify_session($sessionid, $formtype) {
 				  echo $values[0] . " != " . $formtype . "<br>\n";
 				  die("Invalid Client! line 94 Click <A HREF = \"p01stuwelcomepage.php?sessionid=$sessionid\">here</A> to go back.");
 			  }
-		  }else if($formtype == 'stu'){
+		  }else if($formtype == 'stu' ){
 			  if($values[1] != 1){
 				  echo $values[1] . " != " . $formtype . "<br>\n";
 				  die("Invalid Client! line99 Click <A HREF = \"p01adminwelcomepage.php?sessionid=$sessionid\">here</A> to go back.");

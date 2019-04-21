@@ -20,10 +20,10 @@ echo("<br >");
 echo("Click <A HREF = \"p01logout_action.php?sessionid=$sessionid\">here</A> to Logout.");
 echo("<br >");
 
-echo("Click <A HREF = \"p01passChange.php?sessionid=$sessionid\">here</A> to Change Password.");
+echo("Click <A HREF =\"p01passChange.php?sessionid=$sessionid\">here</A> to Change Password.");
 
 echo("<BR><BR><BR>");
-
+echo("<h1>Student info</h1>");
 //======================================================================
 //get clientid for displaying student INFO of 
 //ID, FIRST NAME, LAST NAME, AGE, ADDRESS, TYPE, UNDER PROBATION
@@ -41,7 +41,10 @@ if($result == false){
 }	
 else{
 	if($values = oci_fetch_array($cursor)){
+		
 		$val = $values[0];
+echo("<BR>");
+echo("Click <A HREF=\"p01enroll.php?sessionid=$sessionid&clientid=$val\"> here </A> to enroll.");
 		// Form the query and execute it
 		$sql = "select * from p01student where clientid = '$val'";
 		//echo($sql);
@@ -85,7 +88,7 @@ else{
 			"</tr>");
 			}
 		}	
-		echo("<br> <br>");
+	
 			echo "<table  border=1>";
 		echo "<tr> <th>Section ID</th> <th>CRN</th> <th>Course Title</th> <th>Date</th> <th> Credit</th><th>Grade</th> </tr>";
 			$sql = "select * from p01section where clientid = '$val'";
@@ -109,16 +112,23 @@ else{
 			$credit = $values[4];
 			$grade = $values[5];
 			$totalcred += $credit;
-			$totalgrade += $grade;
-			$gpa = ($totalgrade * $totalcred)/ $totalcred;
+			// $totalgrade += $grade;
+			// echo("<BR>");
+			//$temp = ($grade * $credit);
+			//echo($temp);
+			 //echo(" Temp<br>");
+			 //$temp2 += $temp;
+			// echo($temp2);echo(" Temp2 <br>");
 			$totalcourse += 1;
+			$gpa = $totalcred / $totalcourse;
+		
 			
 			echo("<tr>" . 
 			"<td style='text-align:center;'>$sectid </td>  
 			<td style='text-align:center;'>$crn</td> 
-			<td style='text-align:center;' >$title </td>
+			<td style='text-align:center;' ><a href = \"p01gensection.php?sessionid=$sessionid&clientid=$val&crn=$crn\">$title </a></td>
 			<td style='text-align:center;'>$date </td> 
-			<td style='text-align:center;'>	$credit </td> 
+			<td style='text-align:center;'>$credit</td> 
 			<td style='text-align:center;'>$grade</td>".
 			"</tr>");
 			}
@@ -127,10 +137,11 @@ else{
 		echo "<tr><th>Total Complete Courses</th><th>Total Credit</th> <th>GPA</th></tr>";
 		echo("<tr>".
 			"<td style='text-align:center;'> $totalcourse</td>
-			<td style='text-align:center;'>$totalcred </td> 
+			<td style='text-align:center;'>$totalcred</td> 
 			<td style='text-align:center;'> $gpa</td>".
 		"</tr>");
 		 }
+
 	}
 }
 //=========================================================================
