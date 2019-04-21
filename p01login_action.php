@@ -10,6 +10,7 @@ $sql = "select clientid " .
        "where clientid='$clientid'
          and password ='$password'";
 
+
 $result_array = execute_sql_in_oracle ($sql);
 $result = $result_array["flag"];
 $cursor = $result_array["cursor"];
@@ -46,7 +47,7 @@ if($values = oci_fetch_array ($cursor)){
   else {
     // insert OK - we have created a new session
     //header("Location:p01welcomepage.php?sessionid=$sessionid");
-	 $sql = "select aflag, sflag " .
+ $sql = "select aflag, sflag " .
 		 "from p01users natural join p01myclientsession " .
 		 "where sessionid = '$sessionid'";
 		
