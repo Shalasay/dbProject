@@ -11,9 +11,10 @@ verify_session($sessionid, $formtype);
 // fetch cnoList argument.  
 // note that cnoList is an array.
 $cnoList = $_POST["cnoList"];
-
+echo($cnoList[0]); echo"<BR";
 // count the number of courses passed by multi.php
 $numOfCno = count($cnoList);
+
 // display the corresponding course numbers
 // note that at this point, you can go on and do some more 
 // complicated operations.
@@ -21,9 +22,13 @@ $numOfCno = count($cnoList);
 
 for($n=0; $n<$numOfCno; $n++){
 	//echo "$cnoList[$n]<br>";
-	
-	$sql = "select sectid, crn, ctitle, credit from p01gensection where crn = '$cnoList[$n]'";
-	 ("$sql");
+	echo("<br>n1: $n <br>");
+		if($n == $numOfCno){
+				break;
+			}
+			else{
+				$sql = "select sectid, crn, ctitle, credit, sem from p01gensection where crn = '$cnoList[$n]'";
+	 echo("$sql");
 	$result_array = execute_sql_in_oracle($sql);
 	$result = $result_array["flag"];
 	$cursor = $result_array["cursor"];
@@ -34,44 +39,52 @@ for($n=0; $n<$numOfCno; $n++){
 	}	
 	else{
 		if($values = oci_fetch_array($cursor)){
-			
+				echo("<br>n2: $n <br>");
+			echo("=======Course to add into Section=========="); echo("<BR>");
 			$sectid = $values[0];
 			$crn = $values[1];
 			$ctitle = $values[2];
 			$credit = $values[3];
 			$grade = 100;
-			//$date = TO_DATE('2019/01/14' , 'yyyy/mm/dd');
-			//echo("Today is : <br>");
-			echo($sectid);
-			echo($cnoList[$n]);
-			echo "<br>";
-			echo($ctitle);echo "<br>";
-			//$echo($date);
-			echo($credit);echo "<br>";
-			echo($grade);echo "<br>";
-			echo($clientid); echo"<BR>";
+			$date = $values[4];			
 			
-			//insert into p01section values ('CMSC', '10001' , 'Beginning Programming' ,TO_DATE('2019/01/14', 'yyyy/mm/dd'), 3, 90, 'b');
-			$sql = "insert into p01section values ('$sectid', '$crn' , '$ctitle', TO_DATE('2019/01/14', 'yyyy/mm/dd'), $credit, $grade , '$clientid')";
+			echo("section id: $sectid"); echo "<br>";
+			echo("course number: $cnoList[$n]");echo "<br>";
+			echo("course title: $ctitle");echo "<br>";
+			echo("credit: $credit");echo "<br>";
+			echo("grade: $grade");echo "<br>";
+			echo("client id: $clientid"); echo "<br>";
+			echo"====end of information to add into section=======";
+			echo("<br> n3: $n <br>");
+			$sql = "insert into p01section values ('$sectid', '$crn' , '$ctitle', '$date', $credit, $grade , '$clientid')";
 			echo $sql;
+				echo("<br>n4: $n <br>");
 			$result_array = execute_sql_in_oracle($sql);
 			$result = $result_array["flag"];
 			$cursor = $result_array["cursor"];
-			$result = oci_execute($cursor);
+		
 			if($result == false){
 				display_oracle_error_message($cursor);
 				die("SQL Execution problem.");
 			}	
 			else{
-				echo("<h1> Successfull enrolled");
-				
+				echo("<h1> Successfull enrolled</h1>");
+				echo("n5: $n <br>");
 			}
-			
+			echo("n7: $n <br>");
 		}
+		echo("n8: $n <br>");
 	}
-	
+	echo("n9: $n <br>");
 }
+}
+	
+echo("n10: $n <br>");
+//end of 
 
+
+//Main Menu button
+oci_free_statement($cursor);
 echo("<br>");
 $sql = "select clientid " .
 "from p01users natural join p01myclientsession " .
@@ -122,6 +135,6 @@ else{
 }
 
 oci_free_statement($cursor);
-
+//Header("Location:p01stuwelcomepage.php?sessionid=$sessionid");
 
 ?>

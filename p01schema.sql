@@ -61,21 +61,21 @@ insert into p01users values ('c', 'c', '1', '1');
 insert into p01student values ('stu001', 'John', 'Doe' , 20, '100 N University Dr, Edmond, OK 73034', 'Undergraduate', 'No' , 'b');
 insert into p01student values ('stu002', 'Joe', 'Dan' , 22, '100 N University Dr, Edmond, OK 73034', 'Undergraduate', 'Yes' , 'c');
 
-insert into p01section values ('CMSC', '10001' , 'Beginning Programming' ,'Spring 2019', 3, 90, 'b');
-insert into p01section values ('CMSC', '10002' , 'Programming 1' ,'Fall 2019', 3, 79, 'b');
+insert into p01section values ('CMSC', '10001' , 'Beginning Programming' ,'Spring 2019', 4, 90, 'b');
+insert into p01section values ('CMSC', '10002' , 'Programming 1' ,'Fall 2019', 2, 79, 'b');
 insert into p01section values ('CMSC', '10003' , 'Programming 2' , 'Spring 2020' ,3, 88, 'b');
 insert into p01section values ('CMSC', '10001' , 'Beginning Programming' , 'Fall 2020' , 3, 89, 'c');
 
 insert into p01gensection values('CMSC', '10001', 'Beginning Programming' , 'This course includes an introduction to programming concepts,  a specific computer 
     language will be used for the implementation of the problem solving
-    process.' , 3 , 'Fall 2019',30,0);
+    process.' , 4 , 'Fall 2019',30,0);
 	
 insert into p01gensection values('CMSC', '10002', 'Programming 1' , 'This class is a survey of (roughly) the first half of the textbook on C++. 
-It covers basic C++ statements and some elementary algorithms.', 3 , 'Fall 2019', 30,0);
+It covers basic C++ statements and some elementary algorithms.', 4 , 'Fall 2019', 30,0);
 
 insert into p01gensection values('CMSC', '10003', 'Programming 2' , 'This is a C++ programming course.  
 In this course you are to get a LOT of practice writing C++ programs, 
 and at the same time, learning some of the algorithms and techniques available to programmers. 
-', 3 , 'Fall 2019', 30,0);
+', 4 , 'Fall 2019', 30,0);
 
 commit;
