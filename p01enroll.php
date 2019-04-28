@@ -1,103 +1,183 @@
-<html>
-<head><title>Student Page</title></head>
-<body>
 <?
 include "p01utility_functions.php";
 
 $formtype = 'stu';
 $sessionid =$_GET["sessionid"];
-$clientid = $_GET['clientid'];
 verify_session($sessionid, $formtype);
-// fetch queryCno argument if any
-$queryCno = $_POST["queryCno"];
 
-// $queryCno is the variable holds the query condition
-if(!isset($queryCno) or ($queryCno==""))
-$whereClause = " 1=1 ";
-else{
-	$queryCno = strtoupper($queryCno);
-	$whereClause = " cno like '%$queryCno%' ";
-}
 
-// set up environment
-//putenv("ORACLE_HOME=/home/oracle/OraHome1");
-//putenv("ORACLE_SID=orcl");
+//sets current schedule
+$sql = 	"select ctitle, p01section.crn, sectid, sem, credit, enrollflag, s.stid from p01enrolledcourses join p01section on p01enrolledcourses.crn = p01section.crn 
+join p01student s on s.stid = p01enrolledcourses.stid 
+join p01myclientsession p on s.clientid = p.clientid where sessionid = '$sessionid'";
 
-$connection = oci_connect ("gq055", "ujkorp", "gqiannew2:1521/pdborcl");
-if($connection == false){
-	$e = oci_error(); 
-	die($e['message']);
-}    
+//echo($sql);
+echo ("
+	
+  	<form method=\"post\" action=\"p01enroll_class.php?sessionid=$sessionid\">
+  	<input type=\"submit\" value=\"Enroll a Class\"> <br>
+  	</form>
+  	");
+$result_array = execute_sql_in_oracle($sql);
+$result = $result_array["flag"];
+$cursor = $result_array["cursor"];
+if($result == false){
+	display_oracle_error_message($cursor);
+	die("SQL Execution problem.");
+}	
+echo("Current Schedule");
 
-// processing queries based on course number
-// note that the variable queryCno is passed to the file
-// multi.php itself and processed at the beginning of the file
-echo("<FORM name=\"queryCourse\" method=\"POST\" action=\"multi.php\"> " .
-"Course No: <INPUT type=\"text\" name=\"queryCno\"> " .
-"<INPUT type=\"submit\" name=\"btnSubmit\" value=\"Search\"> " .
-"</FORM>"); 
-
-// the query string
-$query = "select sectid , crn, ctitle, description, credit , max_size, cur_size from p01gensection where " . $whereClause;
-
-$cursor = oci_parse ($connection, $query);
-if ($cursor == false){
-	$e = oci_error($connection);  
-	die($e['message']);
-}
-
-$result = oci_execute ($cursor);
-if ($result == false){
-	$e = oci_error($cursor);  
-	die($e['message']);
-}
-
-// the form to process the selected courses
-// the selected course numbers are in array cnoList[]
-// and passed to proc.php
-echo "<form action=\"proc.php?sessionid=$sessionid&clientid=$clientid\" method=\"post\">";
 echo "<table border=1>";
-echo "<tr>
-	<td> </td>".
-"<td><b>Section ID</b></td>" .
-"<td><b>Course No</b></td>" .
-"<td><b>Course title</b></td>" .
-"<td><b>Description</b></td>" .
-"<td><b>Credits</b></td>" .
-"<td><b>Max Seats</b></td>" .
-"<td><b>Open Seats</b></td> 
-
-	</tr>";  
-
-// fetch the result from the cursor one by one
-while ($values = oci_fetch_array ($cursor)){
-	$sectid = $values[0];
-	$cno = $values[1];
-	$ctitle = $values[2];
-	$description = $values[3];
+echo "<tr> <th>Title</th> <th>ClassID</th> <th>Section</th> <th>Semester</th> <th>credits</th> </tr>";
+while ($values = oci_fetch_array($cursor)){
+	$title = $values[0];
+	$cid = $values[1];
+	$sectionid = $values[2];
+	$semseter = $values[3];
 	$credits = $values[4];
-	$max = $values[5];
-	$cur = $values[6];
-	echo "<tr>
-<td><input type=\"checkbox\" name=\"cnoList[]\" value=\"$cno\"></td>" .
-	"<td>$sectid</td>" .
-	"<td>$cno</td>" .
-	"<td>$ctitle</td>" .
-	"<td>$description</td>" .
-	"<td>$credits</td>" .
-	"<td>$max</td>" .
-	"<td>$cur</td>" .
-	"</tr>";
+	$sid = $values[6];
+
+	echo("<tr>" .
+		"<td>$title</td> <td>$cid</td> 
+		<td>$sectionid</td> 
+		<td>$semseter</td> 
+		<td>$credits</td>" .
+		" <td> <A HREF=\"enroll_drop_class.php?sessionid=$sessionid&cid=$cid&sid=$sid\">Drop Class</A> </td> ".
+		"</tr>");
 }
 echo "</table>";
-echo "<INPUT type=\"submit\" name=\"btnSubmit\" value=\"Enroll\">";
-echo "</form>";
+oci_free_statement($cursor);
+//free
+//search classes by id
 
+$currentdate = getdate();
+$year = $currentdate['year'];
+$month = $currentdate['mon'];
+$day = $currentdate['mday'];
+
+echo "Class Search  -- Current Date : ";
+echo ($year);
+echo "-";
+echo ($month);
+echo "-";
+echo ($day);
+echo "<br>";
+
+
+echo("
+	<form method=\"post\" action=\"enroll.php?sessionid=$sessionid\">
+	Class ID: <input type=\"text\" size=\"6\" maxlength=\"6\" name=\"crn\"> 
+	Section ID: <input type=\"text\" size=\"6\" maxlength=\"6\" name=\"sectid\"> 
+	<input type=\"submit\" value=\"Search\">
+	</form>
+	");
+
+$crn = $_POST["crn"];
+$sectid = $_POST["sectid"];
+
+$whereClause = " sem = 2015 ";
+
+if(isset($crn) and trim($crn)!= ""){
+	$whereClause .= " and crn like '%$crn%'";
+}
+
+if(isset($sectid) and trim($sectid)!= ""){
+	$whereClause .= " and sectid like '%$sectid%'";
+}
+
+$sql = "select crn, ctitle, credit, sem, sectid, stime, max_size, cur_size, deadline from p01gensection natural join p01section where $whereClause";
+//echo ($sql);
+
+$result_array = execute_sql_in_oracle ($sql);
+$result = $result_array["flag"];
+$cursor = $result_array["cursor"];
+
+if ($result == false){
+  display_oracle_error_message($cursor);
+  die("Client Query Failed.");
+}
+
+// Display the query results
+echo "<table border=1>";
+echo "<tr><th>Class id</th> <th>Title</th> <th>Section</th> <th>Semester</th> <th>Time</th> <th>Credits</th> <th>Max Seats</th> <th>Seats Left</th> <th>Enrollment Deadline</th></tr>";
+
+// Fetch the result from the cursor one by one
+while ($values = oci_fetch_array ($cursor)){
+  $cid = $values[0];
+  $title = $values[1];
+  $credits = $values[2];
+  $semester = $values[3];
+  $sectionid = $values[4];
+  $stime = $values[5];
+  $maxstudents = $values[6];
+  $numstudents = $values[7];
+  $enrolldeadline = $values[8];
+
+  $numstudents = ($maxstudents - $numstudents);
+
+  echo("<tr style='text-align:center;'><td>$cid</td> 
+  <td style='text-align:center;'>$title</td> 
+  <td style='text-align:center;'>$sectionid</td> 
+  <td style='text-align:center;'>$semester</td>
+  <td style='text-align:center;'>$stime</td> 
+  <td style='text-align:center;'>$credits</td>
+  <td style='text-align:center;'>$maxstudents</td> 
+  <td style='text-align:center;'>$numstudents</td>
+  <td style='text-align:center;'> $enrolldeadline</td>".
+  	//" <td> <A HREF=\"enroll_add_class_action.php?sessionid=$sessionid&cid=$cid&sectionid=$sectionid&semester=$semester\">Add Class</A> </td> ".
+    "</tr>");
+}
+
+echo "</table>";	
+
+
+echo("<br>");
+$sql = "select clientid " .
+"from p01users natural join p01myclientsession " .
+"where sessionid = '$sessionid'";
+
+$result_array = execute_sql_in_oracle($sql);
+$result = $result_array["flag"];
+$cursor = $result_array["cursor"];
+$result = oci_execute($cursor);
+if($result == false){
+	display_oracle_error_message($cursor);
+	die("SQL Execution problem.");
+}	
+else{
+	$sql = "select aflag, sflag " .
+	"from p01users natural join p01myclientsession " .
+	"where sessionid = '$sessionid'";
+	
+	$result_array = execute_sql_in_oracle($sql);
+	$result = $result_array["flag"];
+	$cursor = $result_array["cursor"];
+	$result = oci_execute($cursor);
+	if($result == false){
+		display_oracle_error_message($cursor);
+		die("SQL Execution problem.");
+	}	
+	if($values = oci_fetch_array($cursor)){
+		
+		if($values[0] != 1){
+			//echo $values[0] . " != " . $formtype . "<br>\n";
+			echo("<FORM action=\"p01stuwelcomepage.php?sessionid=$sessionid\" name=\"Main Page \" method=\"POST\"> " .
+			"<INPUT type=\"submit\" name=\"btnSubmit\" value=\"Main Page\"> " .
+			"</FORM>"); 
+		}
+		
+		else if($values[1] != 1){
+			//echo $values[1] . " != " . $formtype . "<br>\n";
+			echo("<FORM action=\"p01adminwelcomepage.php?sessionid=$sessionid\" name=\"Main Page \" method=\"POST\"> " .
+			"<INPUT type=\"submit\" name=\"btnSubmit\" value=\"Go Back\"> " .
+			"</FORM>"); 
+		}	
+		
+	}
+	
+}				
 oci_free_statement($cursor);
 
-// close the connection with oracle
-oci_close ($connection);
+
 ?>
-</body>
-</html>
 

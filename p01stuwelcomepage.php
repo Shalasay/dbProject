@@ -12,18 +12,18 @@ echo("<title>Student Page</title>");
 echo("Student Management Menu: <br />");
 //echo("<UL><LI><A HREF=\"p01department.php?sessionid=$sessionid\">test</A></LI><LI><A HREF=\"p01employee.php?sessionid=$sessionid\">two</A></LI></UL>");
 
-
-
-
-echo("<br >");
-echo("<br >");
-echo("Click <A HREF = \"p01logout_action.php?sessionid=$sessionid\">here</A> to Logout.");
-echo("<br >");
-
-echo("Click <A HREF =\"p01passChange.php?sessionid=$sessionid\">here</A> to Change Password.");
-
-echo("<BR><BR><BR>");
 echo("<h1>Student info</h1>");
+$sql = "begin update_gpa('$sid'); " .
+		"end;";
+//echo($sql);
+$result_array = execute_sql_in_oracle ($sql);
+$result = $result_array["flag"];
+$cursor = $result_array["cursor"];
+
+if ($result == false){
+  display_oracle_error_message($cursor);
+  die("Client Query Failed.");
+}
 //======================================================================
 //get clientid for displaying student INFO of 
 //ID, FIRST NAME, LAST NAME, AGE, ADDRESS, TYPE, UNDER PROBATION
@@ -44,7 +44,7 @@ else{
 		
 		$val = $values[0];
 echo("<BR>");
-echo("Click <A HREF=\"p01enroll.php?sessionid=$sessionid&clientid=$val\"> here </A> to enroll.");
+
 		// Form the query and execute it
 		$sql = "select * from p01student where clientid = '$val'";
 		//echo($sql);
@@ -88,62 +88,26 @@ echo("Click <A HREF=\"p01enroll.php?sessionid=$sessionid&clientid=$val\"> here <
 			"</tr>");
 			}
 		}	
-	
-			echo "<table  border=1>";
-		echo "<tr> <th>Section ID</th> <th>CRN</th> <th>Course Title</th> <th>Date</th> <th> Credit</th><th>Grade</th> </tr>";
-			$sql = "select * from p01section where clientid = '$val'";
-				$result_array = execute_sql_in_oracle ($sql);
-		$result = $result_array["flag"];
-		$cursor = $result_array["cursor"];
-
-		//echo($result_array);
-		//echo($result);
-		//echo($cursor);
-		if ($result == false){
-			display_oracle_error_message($cursor);
-			die("Client Query Failed.");
-		}
-		 else{
-			 while ($values = oci_fetch_array ($cursor)){
-			$sectid = $values[0];
-			$crn = $values[1];
-			$title = $values[2];
-			$date = $values[3];
-			$credit = $values[4];
-			$grade = $values[5];
-			$totalcred += $credit;
-			// $totalgrade += $grade;
-			// echo("<BR>");
-			//$temp = ($grade * $credit);
-			//echo($temp);
-			 //echo(" Temp<br>");
-			 //$temp2 += $temp;
-			// echo($temp2);echo(" Temp2 <br>");
-			$totalcourse += 1;
-			$gpa = $totalcred / $totalcourse;
-		
-			
-			echo("<tr>" . 
-			"<td style='text-align:center;'>$sectid </td>  
-			<td style='text-align:center;'>$crn</td> 
-			<td style='text-align:center;' ><a href = \"p01gensection.php?sessionid=$sessionid&clientid=$val&crn=$crn\">$title </a></td>
-			<td style='text-align:center;'>$date </td> 
-			<td style='text-align:center;'>$credit</td> 
-			<td style='text-align:center;'>$grade</td>".
-			"</tr>");
-			}
-			//echo($gpa);	
-			echo "<table  border=1>";
-		echo "<tr><th>Total Complete Courses</th><th>Total Credit</th> <th>GPA</th></tr>";
-		echo("<tr>".
-			"<td style='text-align:center;'> $totalcourse</td>
-			<td style='text-align:center;'>$totalcred</td> 
-			<td style='text-align:center;'> $gpa</td>".
-		"</tr>");
-		 }
-
 	}
+	
 }
+
+
+echo("<br >");
+echo("<br >");
+echo("Click <A HREF = \"p01logout_action.php?sessionid=$sessionid\">here</A> to Logout.");
+echo("<br >");
+
+echo("Click <A HREF =\"p01passChange.php?sessionid=$sessionid\">here</A> to Change Password.");echo("<br >");
+
+echo("Click <A HREF=\"p01enroll.php?sessionid=$sessionid&clientid=$val\"> here </A> to enroll.");echo("<br >");
+echo("Click <A HREF=\"p01transcript.php?sessionid=$sessionid&stid \"> here </A> to see transcript.");
+
+
+
+echo("<BR><BR><BR>");
+
+
 //=========================================================================
 
 
