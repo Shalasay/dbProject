@@ -1,30 +1,31 @@
 <?
 include "p01utility_functions.php";
 
-$formtype = 'stu';
+$formtype = 's';
 $sessionid =$_GET["sessionid"];
 verify_session($sessionid, $formtype);
 
 
 //sets current schedule
 $sql = 	"select ctitle, p01section.crn, sectid, sem, credit, enrollflag, s.stid from p01enrolledcourses join p01section on p01enrolledcourses.crn = p01section.crn 
-join p01student s on s.stid = p01enrolledcourses.stid 
-join p01myclientsession p on s.clientid = p.clientid where sessionid = '$sessionid'";
+join p01student s on s.stid = p01enrolledcourses.stid join p01myclientsession p on s.clientid = p.clientid where sessionid = '$sessionid' and enrollflag = 1";
 
 //echo($sql);
+
+$result_array = execute_sql_in_oracle($sql);
+$result = $result_array["flag"];
+$cursor = $result_array["cursor"];
+
+if($result == false){
+	display_oracle_error_message($cursor);
+	die("SQL Execution problem.");
+}	
 echo ("
 	
   	<form method=\"post\" action=\"p01enroll_class.php?sessionid=$sessionid\">
   	<input type=\"submit\" value=\"Enroll a Class\"> <br>
   	</form>
   	");
-$result_array = execute_sql_in_oracle($sql);
-$result = $result_array["flag"];
-$cursor = $result_array["cursor"];
-if($result == false){
-	display_oracle_error_message($cursor);
-	die("SQL Execution problem.");
-}	
 echo("Current Schedule");
 
 echo "<table border=1>";
@@ -38,10 +39,7 @@ while ($values = oci_fetch_array($cursor)){
 	$sid = $values[6];
 
 	echo("<tr>" .
-		"<td>$title</td> <td>$cid</td> 
-		<td>$sectionid</td> 
-		<td>$semseter</td> 
-		<td>$credits</td>" .
+		"<td>$title</td> <td>$cid</td> <td>$sectionid</td> <td>$semseter</td> <td>$credits</td>" .
 		" <td> <A HREF=\"enroll_drop_class.php?sessionid=$sessionid&cid=$cid&sid=$sid\">Drop Class</A> </td> ".
 		"</tr>");
 }
@@ -63,9 +61,9 @@ echo "-";
 echo ($day);
 echo "<br>";
 
-
+//search
 echo("
-	<form method=\"post\" action=\"enroll.php?sessionid=$sessionid\">
+	<form method=\"post\" action=\"p01enroll.php?sessionid=$sessionid\">
 	Class ID: <input type=\"text\" size=\"6\" maxlength=\"6\" name=\"crn\"> 
 	Section ID: <input type=\"text\" size=\"6\" maxlength=\"6\" name=\"sectid\"> 
 	<input type=\"submit\" value=\"Search\">
@@ -124,13 +122,13 @@ while ($values = oci_fetch_array ($cursor)){
   <td style='text-align:center;'>$maxstudents</td> 
   <td style='text-align:center;'>$numstudents</td>
   <td style='text-align:center;'> $enrolldeadline</td>".
-  	//" <td> <A HREF=\"enroll_add_class_action.php?sessionid=$sessionid&cid=$cid&sectionid=$sectionid&semester=$semester\">Add Class</A> </td> ".
+" <td> <A HREF=\"p01enroll_add_action.php?sessionid=$sessionid&crn=$crn&sectid=$sectid&sem=$sem\">Add Class</A> </td> ".
     "</tr>");
 }
 
 echo "</table>";	
 
-
+//back button
 echo("<br>");
 $sql = "select clientid " .
 "from p01users natural join p01myclientsession " .

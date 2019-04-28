@@ -29,7 +29,7 @@ echo("
 	</form>
 	");
 echo("
-	<form method=\"post\" action=\"enroll_class_action.php?sessionid=$sessionid\">
+	<form method=\"post\" action=\"p01enroll_class_action.php?sessionid=$sessionid\">
 	ClassID: <input type=\"text\" value = \"$crn1\" size=\"6\" maxlength=\"6\" name=\"crn1\"> 
 	SectionID: <input type=\"text\" value = \"$sectid1\" size=\"6\" maxlength=\"6\" name=\"sectid1\"> <br>
 	ClassID: <input type=\"text\" value = \"$crn2\" size=\"6\" maxlength=\"6\" name=\"crn2\"> 
