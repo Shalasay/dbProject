@@ -9,14 +9,12 @@ verify_session($sessionid, $formtype);
 
 $clientid = $_POST["clientid"];
 $password = $_POST["password"];
-$aflag = $_POST["aflag"];
-$sflag = $_POST["sflag"];
 
-if($clientid == "" || $password == "" || $aflag == "" || $sflaf == ""){
+if($clientid == "" || $password == ""){
 	echo("<h1>Please fill everything out first.</h1>");
 }
 // the sql string
-$sql = "insert into p01users values ('$clientid', '$password', '$aflag', '$sflag')";
+$sql = "insert into p01users values ('$clientid', '$password', '1', '0')";
 //echo($sql);
 echo("<title>Add Unsuccessful!</title>"); //if you see this page then its not successfully filled out from last page
 $result_array = execute_sql_in_oracle ($sql);
@@ -32,8 +30,6 @@ if ($result == false){
   <form method=\"post\" action=\"p01user_add.php?sessionid=$sessionid\">
   <input type=\"hidden\" value = \"$clientid\" name=\"clientid\">
   <input type=\"hidden\" value = \"$password\" name=\"password\">
-  <input type=\"hidden\" value = \"$aflag\" name=\"aflag\">
-  <input type=\"hidden\" value = \"$sflag\" name=\"sflag\">
   
   Read the error message, and then try again:
   <input type=\"submit\" value=\"Go Back\">

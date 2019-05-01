@@ -79,6 +79,21 @@ create table my_tmp(
 	my_credits number
 );
 
+create or replace procedure create_new_id(i_fname in varchar2, i_lname in varchar2, i_stage in varchar2, i_staddress in varchar2, i_sttype in varchar2, i_ststatus in varchar2, i_id out varchar2)
+	is
+	i_count number;
+	begin
+		lock table p01student in row exclusive mode nowait;
+		select count(*) into i_count from p01student;
+		i_count := i_count + 1;
+		i_id := substr(i_fname, 1, 1) || substr(i_lname, 1, 1) || to_char(i_count, 'FM000000');
+		insert into p01users values (i_id, i_lname, '0', '1');
+		insert into p01student values (i_id, i_fname, i_lname, i_stage, i_staddress, i_sttype, i_ststatus, i_id);
+		commit;
+	end;
+/
+		
+
 --update_gpa procedure
 create or replace procedure update_gpa(student_id in varchar2) as
 	CURSOR c1 is select grade, credit from p01section natural join p01enrolledcourses
