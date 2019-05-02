@@ -5,6 +5,30 @@ $formtype = 'admin';
 $sessionid = $_GET["sessionid"];
 verify_session($sessionid, $formtype);
 
+$connection = oci_connect ("gq055", "ujkorp", "gqiannew2:1521/pdborcl");
+if ($connection == false){
+	echo oci_error()."<BR>";
+	exit;
+}
+
+$sql = 'begin create_new_id(:fname, :lname, :stage, :staddress, :sttype, :ststatus, :id); end;';
+
+echo("<title>Add Success! </title>");
+
+$cursor = oci_parse($connection, $sql);
+if($cursor == false){
+  echo oci_error($connection)."<br>";
+  exit;
+}
+
+oci_bind_by_name($cursor, ':fname', $fname, 30);
+oci_bind_by_name($cursor, ':lname', $lname, 30);
+oci_bind_by_name($cursor, ':stage', $age, 3);
+oci_bind_by_name($cursor, ':staddress', $staddress, 30);
+oci_bind_by_name($cursor, ':sttype', $sttype, 30);
+oci_bind_by_name($cursor, ':ststatus', $ststatus, 30);
+oci_bind_by_name($cursor, ':id', $id, 30);
+
 $fname = $_POST["fname"];
 $lname = $_POST["lname"];
 $stage = $_POST["stage"];
@@ -13,37 +37,8 @@ $sttype = $_POST["sttype"];
 $ststatus = $_POST["ststatus"];
 $id;
 
-//$sql = "insert into p01student values " .
-//		"('$stid', '$fname', '$lname', '$stage', '$staddress', '$sttype', '$ststatus', '$clientid')";
-
-$sql = "begin create_new_id('$fname', '$lname', '$stage', '$staddress', '$sttype', '$ststatus', '$id'); end;";
- echo("<title>Add Success!  $id</title>");
- $result_array = execute_sql_in_oracle ($sql);
- $result = $result_array["flag"];
- $cursor = $result_array["cursor"];
-
-if ($result == false){
-	echo "<B>Insertion Failed.</B> <BR />";
-
-  display_oracle_error_message($cursor);
-  
-  die("<i> 
-
-  <form method=\"post\" action=\"admin_add_student_action.php?sessionid=$sessionid\">
-  <input type=\"hidden\" value = \"$fname\" name=\"fname\">
-  <input type=\"hidden\" value = \"$lname\" name=\"lname\">
-  <input type=\"hidden\" value = \"$stage\" name=\"stage\">
-  <input type=\"hidden\" value = \"$staddress\" name=\"staddress\">
-  <input type=\"hidden\" value = \"$sttype\" name=\"sttype\">
-  <input type=\"hidden\" value = \"$ststatus\" name=\"ststatus\">
-  
-  Read the error message, and then try again:
-  <input type=\"submit\" value=\"Go Back\">
-  </form>
-
-  </i>
-  ");
-}
-
+oci_execute($cursor);
+oci_free_statement($cursor);
+ 
 Header("Location:admin_add_student.php?sessionid=$sessionid");
 ?>
