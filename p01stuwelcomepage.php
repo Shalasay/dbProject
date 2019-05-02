@@ -100,7 +100,8 @@ echo("<br >");
 
 echo("Click <A HREF =\"p01passChange.php?sessionid=$sessionid\">here</A> to Change Password.");echo("<br >");
 
-echo("Click <A HREF=\"p01enroll.php?sessionid=$sessionid&clientid=$val\"> here </A> to enroll.");echo("<br >");
+echo("Click <A HREF=\"p01enroll.php?sessionid=$sessionid&clientid=$val\"> here </A> to see Schedule.");echo("<br >");
+
 echo("Click <A HREF=\"p01transcript.php?sessionid=$sessionid&stid \"> here </A> to see transcript.");
 
 

@@ -40,14 +40,13 @@ echo("
 	SectionID: <input type=\"text\" value = \"$sectid4\" size=\"6\" maxlength=\"6\" name=\"sectid4\"> <br>
 	ClassID: <input type=\"text\" value = \"$crn5\" size=\"6\" maxlength=\"6\" name=\"crn5\"> 
 	SectionID: <input type=\"text\" value = \"$sectid5\" size=\"6\" maxlength=\"6\" name=\"sectid5\"> <br>
-	
 	<input type=\"submit\" value=\"Add Classes\">
 	</form>
 	");
 $crn = $_POST["crn"];
 $sectid = $_POST["sectid"];
 
-$whereClause = " sem = 2015 ";
+$whereClause = " sem = 2020";
 
 if(isset($crn) and trim($crn)!= ""){
 	$whereClause .= " and crn like '%$crn%'";
@@ -57,7 +56,8 @@ if(isset($sectid) and trim($sectid)!= ""){
 	$whereClause .= " and sectid like '%$sectid%'";
 }
 
-$sql = "select crn, ctitle, credit, sem, sectid, stime, max_size, cur_size, deadline from p01gensection natural join p01section where $whereClause";
+$sql = "select crn, ctitle, credit, sem, 
+sectid, stime, max_size, cur_size, deadline from p01gensection natural join p01section where $whereClause";
 //echo ($sql);
 
 $result_array = execute_sql_in_oracle ($sql);
