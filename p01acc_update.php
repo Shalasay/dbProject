@@ -4,23 +4,14 @@ $formtype = '';
 $sessionid =$_GET["sessionid"];
 verify_session($sessionid, $formtype);	
 
-
-//echo("$sessionid");
-
-//change password
-echo("<TITLE>Change Password </TITLE>");
-echo("<h1>Change Password</h1>"); 	
+echo("<TITLE>Manage User </TITLE>");
+echo("<h1>User Management</h1>"); 	
 
 $clientid = $_GET["clientid"];
 $pass = $_GET["password"];
 $aflag = $_GET["aflag"];
 $sflag = $_GET["sflag"];
- echo("CLIENT ID: $clientid <br>");
-// echo("PASSWORD: $pass <br>");
-// echo("Client Type: $clienttype<br>");
-// echo("SESSIONS ID: $sessionid <br>");
-//"Account ID: <INPUT type=\"text\" name=\"clientid\" value=\"$clientid\"> <br>" .
-
+echo("CLIENT ID: $clientid <br>");
 echo("<FORM action=\"p01acc_update_action.php?sessionid=$sessionid&clientid=$clientid\" name=\"Change Password: \" method=\"POST\"> " .
 	 "Account Password: <INPUT type=\"text\" name=\"pass\" value=\"$pass\"> <br>" .
 	  "Admin Flag: <INPUT type=\"text\" name=\"aflag\" value=\"$aflag\"> <br>" .

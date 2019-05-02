@@ -13,8 +13,6 @@ if ($connection == false){
 
 $sql = 'begin create_new_id(:fname, :lname, :stage, :staddress, :sttype, :ststatus, :id); end;';
 
-echo("<title>Add Success! </title>");
-
 $cursor = oci_parse($connection, $sql);
 if($cursor == false){
   echo oci_error($connection)."<br>";
@@ -37,7 +35,13 @@ $sttype = $_POST["sttype"];
 $ststatus = $_POST["ststatus"];
 $id;
 
-oci_execute($cursor);
+$result = oci_execute($cursor, OCI_NO_AUTO_COMMIT);
+if($result == false){
+  display_oracle_error_message($cursor);
+  echo oci_error($cursor)."<BR>";
+  exit;
+}
+
 oci_free_statement($cursor);
  
 Header("Location:admin_add_student.php?sessionid=$sessionid");
