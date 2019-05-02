@@ -39,7 +39,7 @@ gpa number(2,1),
 foreign key (clientid) references p01users ON DELETE CASCADE
 );
 
-create table p01section( /*Classes*/
+create table p01section( /*Classes for each student if they need prereq*/
 crn varchar2(32) primary key ,
 ctitle varchar2(32),
 credit number(1),
@@ -132,23 +132,23 @@ insert into p01section values ( 'cs2211', 'Programming 2', 3, 'cs2111', 'ma1111'
 insert into p01section values ( 'ma2111', 'Math 2', 4, 'ma1111', null);
 insert into p01section values ( 'ma2211', 'Math 3', 4, 'ma1111', 'ma2111');
 --list of course/classes
-insert into p01gensection values ('cs1111', 0001, 2019,    0,  3, 3, TO_DATE('20190101', 'yyyymmdd'));
-insert into p01gensection values ('cs2111', 0001, 2019,    0,  2, 1, TO_DATE('20190101', 'yyyymmdd'));
-insert into p01gensection values ('cs2211', 0001, 2019,    0,  2, 0, TO_DATE('20190101', 'yyyymmdd'));
-insert into p01gensection values ('cs1111', 0001, 2020, 1300,  3, 0, TO_DATE('20201225', 'yyyymmdd'));
-insert into p01gensection values ('cs2111', 0001, 2020, 1400,  2, 0, TO_DATE('20201101', 'yyyymmdd'));
-insert into p01gensection values ('cs2211', 0001, 2020, 1500,  1, 0, TO_DATE('20201225', 'yyyymmdd'));
+insert into p01gensection values ('cs1111', 0001, 2020,    0,  3, 3, TO_DATE('20200101', 'yyyymmdd'));
+insert into p01gensection values ('cs2111', 0001, 2020,    0,  2, 1, TO_DATE('20200101', 'yyyymmdd'));
+insert into p01gensection values ('cs2211', 0001, 2020,    0,  2, 0, TO_DATE('20200101', 'yyyymmdd'));
+insert into p01gensection values ('cs1111', 0001, 2021, 1300,  3, 0, TO_DATE('20211225', 'yyyymmdd'));
+insert into p01gensection values ('cs2111', 0001, 2021, 1400,  2, 0, TO_DATE('20211101', 'yyyymmdd'));
+insert into p01gensection values ('cs2211', 0001, 2021, 1500,  1, 0, TO_DATE('20211225', 'yyyymmdd'));
 --ma sections
-insert into p01gensection values ('ma1111', 0001, 2014,    0,  3, 3, TO_DATE('20140101', 'yyyymmdd'));
-insert into p01gensection values ('ma2111', 0001, 2014,    0,  2, 1, TO_DATE('20140101', 'yyyymmdd'));
-insert into p01gensection values ('ma2211', 0001, 2014,    0,  2, 0, TO_DATE('20140101', 'yyyymmdd'));
-insert into p01gensection values ('ma1111', 0001, 2015, 1300,  3, 0, TO_DATE('20151225', 'yyyymmdd'));
-insert into p01gensection values ('ma2111', 0001, 2015, 1400,  2, 0, TO_DATE('20151101', 'yyyymmdd')); 
-insert into p01gensection values ('ma2211', 0001, 2015, 1500,  1, 0, TO_DATE('20151225', 'yyyymmdd'));
+insert into p01gensection values ('ma1111', 0001, 2020,    0,  3, 3, TO_DATE('20190101', 'yyyymmdd'));
+insert into p01gensection values ('ma2111', 0001, 2020,    0,  2, 1, TO_DATE('20190101', 'yyyymmdd'));
+insert into p01gensection values ('ma2211', 0001, 2020,    0,  2, 0, TO_DATE('20190101', 'yyyymmdd'));
+insert into p01gensection values ('ma1111', 0001, 2021, 1300,  3, 0, TO_DATE('20211225', 'yyyymmdd'));
+insert into p01gensection values ('ma2111', 0001, 2021, 1400,  2, 0, TO_DATE('20211101', 'yyyymmdd')); 
+insert into p01gensection values ('ma2211', 0001, 2021, 1500,  1, 0, TO_DATE('20211225', 'yyyymmdd'));
 --student enrolled into a course
-insert into p01enrolledcourses values ( 'stu001', 'cs1111', 2019, 0001, 0, 1);
-insert into p01enrolledcourses values ( 'stu002', 'cs1111', 2019, 0001, 0, 1);
-insert into p01enrolledcourses values ( 'stu002', 'cs2111', 2019, 0001, 0, 4);
+insert into p01enrolledcourses values ( 'stu001', 'cs1111', 2020, 0001, 0, 1);
+-- insert into p01enrolledcourses values ( 'stu002', 'cs1111', 2020, 0001, 0, 1);
+-- insert into p01enrolledcourses values ( 'stu002', 'cs2111', 2020, 0001, 0, 4);
 i
 
 -- insert into p01gensection values('CMSC', '10001', 'Beginning Programming' ,  4 , 'Fall 2019',30,0);
@@ -164,7 +164,6 @@ create or replace procedure check_deadline
 	begin
 		select deadline into my_deadline from p01gensection
 			where crn = my_crn and sectid = my_sectid and sem = my_sem;
-
 		IF my_deadline < my_date THEN
 			dbms_output.put_line('deadline passed error');
 			my_error := 'Enroll deadline passed for class ' 
