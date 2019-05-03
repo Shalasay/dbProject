@@ -27,7 +27,7 @@ oci_bind_by_name($cursor, ':city', $city, 30);
 oci_bind_by_name($cursor, ':state', $state, 30);
 oci_bind_by_name($cursor, ':zipcode', $zipcode, 30);
 oci_bind_by_name($cursor, ':sttype', $sttype, 30);
-oci_bind_by_name($cursor, ':status', $ststatus, 30);
+oci_bind_by_name($cursor, ':status', $status, 30);
 oci_bind_by_name($cursor, ':id', $id, 30);
 
 $fname = $_POST["fname"];

@@ -41,7 +41,7 @@ while ($values = oci_fetch_array($cursor)){
 
 	echo("<tr>" .
 		"<td>$title</td> <td>$cid</td> <td>$sectionid</td> <td>$semseter</td> <td>$credits</td>" .
-		" <td> <A HREF=\"enroll_drop_class.php?sessionid=$sessionid&cid=$cid&sid=$sid\">Drop Class</A> </td> ".
+		//" <td> <A HREF=\"enroll_drop_class.php?sessionid=$sessionid&cid=$cid&sid=$sid\">Drop Class</A> </td> ".
 		"</tr>");
 }
 echo "</table>";

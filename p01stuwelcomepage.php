@@ -78,18 +78,21 @@ echo("<BR>");
 			$stid = $values[0];
 			$fname = $values[1];
 			$lname = $values[2];
-			$stage = $values[3];
-			$staddress = $values[4];
-			$sstype = $values[5];
-			$sstatus = $values[6];
-			$stclientid = $values[7];
+			$stage = $values[4];
+			$staddress = $values[5];
+			$city = $values[6];
+			$state = $values[7];
+			$zipcode = $values[8];
+			$sstype = $values[9];
+			$sstatus = $values[10];
+			$stclientid = $values[3];
 			
 			echo("<tr>" . 
 			"<td style='text-align:center;'>$stid</td>  
 			<td style='text-align:center;'>$fname</td> 
 			<td style='text-align:center;' >$lname</td>
 			<td style='text-align:center;'>$stage </td> 
-			<td style='text-align:center;'>$staddress</td> 
+			<td style='text-align:center;'>$staddress, $city, $state, $zipcode</td> 
 			<td style='text-align:center;'>$sstype</td> 
 			<td style='text-align:center;'>$sstatus</td>".
 			"</tr>");
@@ -99,7 +102,8 @@ echo("<BR>");
 		
 		echo "<table  border=1>";
 		echo "<tr> <th>Section ID</th> <th>CRN</th> <th>Course Title</th> <th>Date</th> <th> Credit</th><th>Grade</th> </tr>";
-			$sql = "select p.stid, p.crn, i.ctitle, o.sem, i.credit, p.grade from p01enrolledcourses p join p01gensection o on p.crn = o.crn and p.sectid = o.sectid and p.sem = o.sem join p01section i on o.crn = i.crn";
+			//$sql = "select p.stid, p.crn, i.ctitle, o.sem, i.credit, p.grade from p01enrolledcourses p join p01gensection o on p.crn = o.crn and p.sectid = o.sectid and p.sem = o.sem join p01section i on o.crn = i.crn";
+			$sql = "select p.sectid, p.crn, i.ctitle, o.sem, i.credit, p.grade from p01enrolledcourses p join p01gensection o on p.crn = o.crn and p.sectid = o.sectid and p.sem = o.sem join p01section i on o.crn = i.crn where stid = '$val'";
 				$result_array = execute_sql_in_oracle ($sql);
 		$result = $result_array["flag"];
 		$cursor = $result_array["cursor"];

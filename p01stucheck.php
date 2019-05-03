@@ -54,7 +54,7 @@ echo("<br><br /><form method=\"post\" action=\"p01manage.php?sessionid=$sessioni
 		echo("<br> <br>");
 			echo "<table  border=1>";
 		echo "<tr> <th>Section ID</th> <th>CRN</th> <th>Course Title</th> <th>Date</th> <th> Credit</th><th>Grade</th> </tr>";
-			$sql = "select * from p01section where clientid = '$q_clientid'";
+			$sql = "select p.sectid, p.crn, i.ctitle, o.sem, i.credit, p.grade from p01enrolledcourses p join p01gensection o on p.crn = o.crn and p.sectid = o.sectid and p.sem = o.sem join p01section i on o.crn = i.crn where stid = '$q_clientid'";
 				$result_array = execute_sql_in_oracle ($sql);
 		$result = $result_array["flag"];
 		$cursor = $result_array["cursor"];
@@ -66,15 +66,14 @@ echo("<br><br /><form method=\"post\" action=\"p01manage.php?sessionid=$sessioni
 		 else{
 			 while ($values = oci_fetch_array ($cursor)){
 			$sectid = $values[0];
-			$crn = $values[1];
-			$title = $values[2];
-			$date = $values[3];
-			$credit = $values[4];
-			$grade = $values[5];
-			$totalcred += $credit;
-			$totalgrade += $grade;
-			$gpa = ($totalgrade * $totalcred)/ $totalcred;
-			$totalcourse += 1;
+            $crn = $values[1];
+            $title = $values[2];
+            $date = $values[3];
+            $credit = $values[4];
+            $grade = $values[5];
+            $totalcred += $credit;
+            $totalcourse += 1;
+            $gpa = $totalcred / $totalcourse;
 			
 			echo("<tr>" . 
 			"<td style='text-align:center;'>$sectid </td>  

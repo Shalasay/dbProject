@@ -103,40 +103,7 @@ create or replace procedure create_new_id(
 		commit;
 	end;
 /
---update_gpa procedure
-create or replace procedure update_gpa(student_id in varchar2) as
-	CURSOR c1 is select grade, credit from p01section natural join p01enrolledcourses
-	where stid = student_id and enrollflag = 0;
 
-	my_grade number;
-	my_credits number;
-
-	grade_total number;
-	credits_total number;
-
-	my_gpa number(3,1);
-	begin
-
-		delete from my_tmp;
-		commit;
-		
-		open c1;
-		LOOP
-			fetch c1 into my_grade, my_credits;
-			EXIT WHEN c1%NOTFOUND;
-			my_grade := my_grade * my_credits;
-			insert into my_tmp values(my_grade, my_credits);
-			commit;
-		END LOOP;
-		close c1;
-		select SUM(my_grade) into grade_total from my_tmp;
-		select SUM(my_credits) into  credits_total from my_tmp;
-		my_gpa := grade_total/credits_total;
-		--dbms_output.put_line(my_gpa);
-		update p01student set gpa = my_gpa where stid = student_id;
-		commit;
-	end;
-	/
 insert into p01users values ('a', 'a', '1', '0');
 insert into p01users values ('JD000001', 'b', '0', '1');
 insert into p01users values ('JD000002', 'c', '1', '1');
@@ -169,6 +136,10 @@ insert into p01enrolledcourses values ( 'JD000001', 'cs1111', 2020, 0001, 0, 100
 insert into p01enrolledcourses values ( 'JD000001', 'cs2111', 2020, 0001, 0, 70);
 insert into p01enrolledcourses values ( 'JD000001', 'cs2211', 2020, 0001, 0, 80);
 
+insert into p01enrolledcourses values ( 'JD000002', 'cs1111', 2020, 0001, 0, 50);
+insert into p01enrolledcourses values ( 'JD000002', 'cs2111', 2020, 0001, 0, 60);
+insert into p01enrolledcourses values ( 'JD000002', 'cs2211', 2020, 0001, 0, 40);
+
 create or replace procedure check_deadline
 	(my_crn in varchar2, my_sectid in varchar2, my_sem in number, my_error out varchar2)
 	AS
@@ -183,93 +154,5 @@ create or replace procedure check_deadline
 				|| my_sectid;
 		END IF;
 	END;
-	/
-
-create or replace procedure check_passed_course
-	(my_crn in varchar2, my_stid in varchar2, my_error out varchar2)
-	is
-	my_grade number;
-	begin
-		select max(grade) into my_grade from p01enrolledcourses 
-			where crn = my_crn and stid = my_stid;
-		IF my_grade IS NOT NULL THEN
-			IF my_grade > 1 THEN
-				my_error := 'Class '
-					|| my_crn
-					|| ' previously passed';
-			END IF;
-		END IF;
-	END;
-	/
-create or replace procedure check_prereq
-	(my_crn in varchar2, my_sectid in varchar2, my_stid in varchar2, my_error out varchar2)
-	is
-	my_prereq varchar2(30);
-	my_tmp number;
-	begin
-		--check prereq1
-		select prereq1 into my_prereq from p01section
-			where crn = my_crn;
-		IF my_prereq IS NOT NULL THEN
-			select count(*) into my_tmp from p01enrolledcourses
-				where crn = my_prereq and stid = my_stid and enrollflag = 0;
-			IF my_tmp = 0 THEN
-				my_error := 'Prereq1 not taken for class '
-					|| my_crn
-					|| ' section '
-					|| my_sectid;
-			END IF;
-		END IF;
-
-		--check prereq2
-		select prereq2 into my_prereq from p01section 
-			where crn = my_crn;
-		IF my_prereq IS NOT NULL THEN
-			select count(*) into my_tmp from p01enrolledcourses
-				where crn = my_prereq and stid = my_stid and enrollflag = 0;
-			IF my_tmp = 0 THEN
-				my_error := my_error 
-					|| 'Prereq2 not taken for class '
-					|| my_crn
-					|| ' section '
-					|| my_sectid;
-			END IF;
-		END IF;
-	END;
-	/
-create or replace procedure check_seat_available
-	(my_crn in varchar2, my_sectid in varchar2, my_sem in number, my_stid in varchar2, my_error out varchar2)
-	is
-	my_students number;
-	my_max_students number;
-	my_tmp number;
-	begin
-		delete from my_tmp;
-		select count(*) into my_tmp from p01enrolledcourses
-			where crn = my_crn and sectid = my_sectid and sem=my_sem and enrollflag = 1;
-		IF my_tmp = 0 THEN
-			select cur_size, max_size into my_students, my_max_students from p01gensection
-				where crn = my_crn and sectid = my_sectid and sem = my_sem FOR UPDATE;
-			IF (my_max_students - my_students) > 0 THEN
-				insert into p01enrolledcourses values (my_stid, my_crn, my_sem, my_sectid, 1, NULL);
-				my_students := my_students + 1; 
-				update p01gensection set cur_size = my_students
-					where crn = my_crn and sectid = my_sectid and sem = my_sem;
-				COMMIT;
-			ELSE
-				ROLLBACK;
-				my_error := 'No seats available for '
-					|| my_crn
-					|| ' section '
-					|| my_sectid;
-			END IF;
-		ELSE
-			my_error := 'Currently enrolled in '
-				|| my_crn
-				|| ' section '
-				|| my_sectid;
-		END IF;
-	END;
-	/
-
+/
 commit;
