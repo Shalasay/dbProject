@@ -22,7 +22,7 @@ Student flag: <input type=\"text\" size=\"20\" maxlength=\"50\" name=\"q_sflag\"
 </form>
 
 <form method=\"post\" action=\"p01user_add.php?sessionid=$sessionid\">
-<input type=\"submit\" value=\"Add A New Administrator\">
+<input type=\"submit\" value=\"Add A New User\">
 </form>
 ");
 
