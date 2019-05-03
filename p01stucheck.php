@@ -11,6 +11,7 @@ echo($q_clientid);
 echo("<br><br /><form method=\"post\" action=\"p01manage.php?sessionid=$sessionid\">
 		<input type=\"submit\" value=\"Go Back\">
 		</form>");
+		
 		$sql = "select * from p01student where clientid = '$q_clientid'";
 
 		$result_array = execute_sql_in_oracle ($sql);
@@ -63,34 +64,35 @@ echo("<br><br /><form method=\"post\" action=\"p01manage.php?sessionid=$sessioni
 			die("Client Query Failed.");
 		}
 		 else{
-			while ($values = oci_fetch_array ($cursor)){
-				$sectid = $values[0];
-				$crn = $values[1];
-				$title = $values[2];
-				$date = $values[3];
-				$credit = $values[4];
-				$grade = $values[5];
-				$totalcred += $credit;
-				$totalgrade += $grade;
-				$gpa = ($totalgrade * $totalcred)/ $totalcred;
-				$totalcourse += 1;
+			 while ($values = oci_fetch_array ($cursor)){
+			$sectid = $values[0];
+			$crn = $values[1];
+			$title = $values[2];
+			$date = $values[3];
+			$credit = $values[4];
+			$grade = $values[5];
+			$totalcred += $credit;
+			$totalgrade += $grade;
+			$gpa = ($totalgrade * $totalcred)/ $totalcred;
+			$totalcourse += 1;
 			
-				echo("<tr>" . 
-					"<td style='text-align:center;'>$sectid </td>  
-					<td style='text-align:center;'>$crn</td> 
-					<td style='text-align:center;' >$title </td>
-					<td style='text-align:center;'>$date </td> 
-					<td style='text-align:center;'>	$credit </td> 
-					<td style='text-align:center;'>$grade</td>".
-					"</tr>");
-			}	
+			echo("<tr>" . 
+			"<td style='text-align:center;'>$sectid </td>  
+			<td style='text-align:center;'>$crn</td> 
+			<td style='text-align:center;' >$title </td>
+			<td style='text-align:center;'>$date </td> 
+			<td style='text-align:center;'>	$credit </td> 
+			<td style='text-align:center;'>$grade</td>".
+			"</tr>");
+			}
+			
 			echo "<table  border=1>";
-			echo "<tr><th>Total Complete Courses</th><th>Total Credit</th> <th>GPA</th></tr>";
-			echo("<tr>".
-				"<td style='text-align:center;'> $totalcourse</td>
-				<td style='text-align:center;'>$totalcred </td> 
-				<td style='text-align:center;'> $gpa</td>".
-				"</tr>");
+		echo "<tr><th>Total Complete Courses</th><th>Total Credit</th> <th>GPA</th></tr>";
+		echo("<tr>".
+			"<td style='text-align:center;'> $totalcourse</td>
+			<td style='text-align:center;'>$totalcred </td> 
+			<td style='text-align:center;'> $gpa</td>".
+		"</tr>");
+		 }
 		}
-	}
 ?>

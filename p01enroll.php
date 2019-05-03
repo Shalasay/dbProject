@@ -10,10 +10,10 @@ verify_session($sessionid, $formtype);
 $sql = 	"select ctitle, p01section.crn, sectid, sem, credit, enrollflag, 
 s.stid from p01enrolledcourses join p01section on p01enrolledcourses.crn = p01section.crn 
 join p01student s on s.stid = p01enrolledcourses.stid join p01myclientsession p on 
-s.clientid = p.clientid where sessionid = '$sessionid' ";
+s.clientid = p.clientid where sessionid = '$sessionid' 	";
 
-echo($sql);
-echo"enrollflag 0";
+//echo($sql);
+//echo"enrollflag 0";
 $result_array = execute_sql_in_oracle($sql);
 $result = $result_array["flag"];
 $cursor = $result_array["cursor"];
