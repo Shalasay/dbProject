@@ -6,41 +6,37 @@ $sessionid =$_GET["sessionid"];
 verify_session($sessionid, $formtype);
 
 $q_clientid = $_GET["clientid"];
+
 echo($q_clientid);
 echo("<br><br /><form method=\"post\" action=\"p01manage.php?sessionid=$sessionid\">
 		<input type=\"submit\" value=\"Go Back\">
 		</form>");
-		// Form the query and execute it
 		$sql = "select * from p01student where clientid = '$q_clientid'";
-		//=echo($sql);
-		
-		//echo("<BR><BR><BR>");
+
 		$result_array = execute_sql_in_oracle ($sql);
 		$result = $result_array["flag"];
 		$cursor = $result_array["cursor"];
 
-		//echo($result_array);
-		//echo($result);
-		//echo($cursor);
 		if ($result == false){
 			display_oracle_error_message($cursor);
 			die("Client Query Failed.");
 		}
 		{
-		// Display the query results
 		echo "<table  border=1>";
 		echo "<tr> <th>Student ID</th> <th>First Name</th> <th>Last Name</th> <th>Age</th> <th> Address</th><th>Type</th> <th>Under Probation</th> </tr>";
 		{
 			
-		// Fetch the result from the cursor one by one
 			while ($values = oci_fetch_array ($cursor)){
 			$stid = $values[0];
 			$fname = $values[1];
 			$lname = $values[2];
 			$stage = $values[4];
 			$staddress = $values[5];
-			$sstype = $values[10];
-			$sstatus = $values[11];
+			$city = $values[6];
+			$state = $values[7];
+			$zipcode = $values[8];
+			$sstype = $values[9];
+			$sstatus = $values[10];
 			$stclientid = $values[3];
 			
 			echo("<tr>" . 
@@ -48,7 +44,7 @@ echo("<br><br /><form method=\"post\" action=\"p01manage.php?sessionid=$sessioni
 			<td style='text-align:center;'>$fname</td> 
 			<td style='text-align:center;' >$lname</td>
 			<td style='text-align:center;'>$stage </td> 
-			<td style='text-align:center;'>$staddress</td> 
+			<td style='text-align:center;'>$staddress, $city, $state, $zipcode</td> 
 			<td style='text-align:center;'>$sstype</td> 
 			<td style='text-align:center;'>$sstatus</td>".
 			"</tr>");
@@ -62,9 +58,6 @@ echo("<br><br /><form method=\"post\" action=\"p01manage.php?sessionid=$sessioni
 		$result = $result_array["flag"];
 		$cursor = $result_array["cursor"];
 
-		//echo($result_array);
-		//echo($result);
-		//echo($cursor);
 		if ($result == false){
 			display_oracle_error_message($cursor);
 			die("Client Query Failed.");
@@ -90,8 +83,7 @@ echo("<br><br /><form method=\"post\" action=\"p01manage.php?sessionid=$sessioni
 					<td style='text-align:center;'>	$credit </td> 
 					<td style='text-align:center;'>$grade</td>".
 					"</tr>");
-			}
-			//echo($gpa);	
+			}	
 			echo "<table  border=1>";
 			echo "<tr><th>Total Complete Courses</th><th>Total Credit</th> <th>GPA</th></tr>";
 			echo("<tr>".

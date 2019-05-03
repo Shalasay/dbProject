@@ -19,7 +19,7 @@ create table p01myclientsession (
   sessionid varchar2(32) primary key,
   clientid varchar2(8),
   sessiondate date,
-  foreign key (clientid) references p01users
+  foreign key (clientid) references p01users ON DELETE CASCADE
 );
 
 create table p01student (
@@ -28,12 +28,11 @@ fname varchar2(32) not null,
 lname varchar2(32) not null,
 clientid varchar2(8) not null,
 age number(3), 
-streetNumber number(8),
-streetName varchar2(30),
+street varchar2(30),
 city varchar2(30),
 state varchar2(30),
-zipCode varchar2(5),
-typeflag varchar2(1),
+zipcode varchar2(5),
+sttype varchar2(1),
 status varchar2(1),
 gpa number(2,1),
 foreign key (clientid) references p01users ON DELETE CASCADE
@@ -82,10 +81,13 @@ create table my_tmp(
 create or replace procedure create_new_id(
 	i_fname in varchar2,
 	i_lname in varchar2, 
-	i_stage in number, 
-	i_staddress in number, 
+	i_age in number, 
+	i_street in varchar2, 
+	i_city in varchar2,
+	i_state in varchar2,
+	i_zipcode in varchar2,
 	i_sttype in varchar2, 
-	i_ststatus in varchar2, 
+	i_status in varchar2, 
 	i_id out varchar2
 	)
 	is
@@ -97,8 +99,8 @@ create or replace procedure create_new_id(
 		i_count := i_count + 1;
 		i_id := substr(i_fname, 1, 1) || substr(i_lname, 1, 1) || to_char(i_count, 'FM000000');
 		insert into p01users values (i_id, i_lname, '0', '1');
-		insert into p01student (stid, fname, lname, age, streetNumber, typeflag, status, clientid) 
-						values (i_id, i_fname, i_lname, i_stage, i_staddress, i_sttype, i_ststatus, i_id);
+		insert into p01student (stid, fname, lname, age, street, city, state, zipcode, sttype, status, clientid) 
+						values (i_id, i_fname, i_lname, i_age, i_street, i_city, i_state, i_zipcode, i_sttype, i_status, i_id);
 		commit;
 	end;
 /
@@ -139,17 +141,12 @@ create or replace procedure update_gpa(student_id in varchar2) as
 	end;
 	/
 insert into p01users values ('a', 'a', '1', '0');
-insert into p01users values ('b', 'b', '0', '1');
-insert into p01users values ('c', 'c', '1', '1');
+insert into p01users values ('JD000001', 'b', '0', '1');
+insert into p01users values ('JD000002', 'c', '1', '1');
 
-insert into p01student values ('stu001', 'John', 'Doe'  , 'b' , 20, 100, 'N University Dr' , 'Edmond' , 'OK' , '73034', 'U', 'N' , null);
-insert into p01student values ('stu002', 'Joe', 'Dan' , 'c' , 22, 100 , 'N University Dr' , 'Edmond', 'OK' , '73034', 'U' , 'Y', null );
+insert into p01student values ('JD000001', 'John', 'Doe'  , 'JD000001' , 20, '100 N University Dr' , 'Edmond' , 'OK' , '73034', 'U', 'N' , null);
+insert into p01student values ('JD000002', 'Joe', 'Dan' , 'JD000002' , 22, '100 N University Dr' , 'Edmond', 'OK' , '73034', 'U' , 'Y', null );
 
--- insert into p01section values ('CMSC', '10001' , 'Beginning Programming' ,'Spring 2019', 4, 90, 'b');
--- insert into p01section values ('CMSC', '10002' , 'Programming 1' ,'Fall 2019', 2, 79, 'b');
--- insert into p01section values ('CMSC', '10003' , 'Programming 2' , 'Spring 2020' ,3, 88, 'b');
--- insert into p01section values ('CMSC', '10001' , 'Beginning Programming' , 'Fall 2020' , 3, 89, 'c');
---courses/classes students enrolled
 insert into p01section values ( 'cs1111', 'Intro to Computers', 3, null, null);
 insert into p01section values ( 'ma1111', 'Math 1', 4, null, null);
 insert into p01section values ( 'cs2111', 'Programming 1', 3, 'cs1111', null);
@@ -171,14 +168,7 @@ insert into p01gensection values ('ma1111', 0001, 2021, 1300,  3, 0, TO_DATE('20
 insert into p01gensection values ('ma2111', 0001, 2021, 1400,  2, 0, TO_DATE('20211101', 'yyyymmdd')); 
 insert into p01gensection values ('ma2211', 0001, 2021, 1500,  1, 0, TO_DATE('20211225', 'yyyymmdd'));
 --student enrolled into a course
-insert into p01enrolledcourses values ( 'stu001', 'cs1111', 2020, 0001, 0, 1);
--- insert into p01enrolledcourses values ( 'stu002', 'cs1111', 2020, 0001, 0, 1);
--- insert into p01enrolledcourses values ( 'stu002', 'cs2111', 2020, 0001, 0, 4);
-i
-
--- insert into p01gensection values('CMSC', '10001', 'Beginning Programming' ,  4 , 'Fall 2019',30,0);
--- insert into p01gensection values('CMSC', '10002', 'Programming 1' , 4 , 'Fall 2019', 30,0);
--- insert into p01gensection values('CMSC', '10003', 'Programming 2' ,  4 , 'Fall 2019', 30,0);
+insert into p01enrolledcourses values ( 'JD000001', 'cs1111', 2020, 0001, 0, 1);
 
 create or replace procedure check_deadline
 	(my_crn in varchar2, my_sectid in varchar2, my_sem in number, my_error out varchar2)

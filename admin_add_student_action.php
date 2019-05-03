@@ -11,7 +11,7 @@ if ($connection == false){
 	exit;
 }
 
-$sql = 'begin create_new_id(:fname, :lname, :stage, :staddress, :sttype, :ststatus, :id); end;';
+$sql = 'begin create_new_id(:fname, :lname, :age, :street, :city, :state, :zipcode, :sttype, :status, :id); end;';
 
 $cursor = oci_parse($connection, $sql);
 if($cursor == false){
@@ -21,18 +21,24 @@ if($cursor == false){
 
 oci_bind_by_name($cursor, ':fname', $fname, 30);
 oci_bind_by_name($cursor, ':lname', $lname, 30);
-oci_bind_by_name($cursor, ':stage', $age, 3);
-oci_bind_by_name($cursor, ':staddress', $staddress, 30);
+oci_bind_by_name($cursor, ':age', $age, 3);
+oci_bind_by_name($cursor, ':street', $street, 30);
+oci_bind_by_name($cursor, ':city', $city, 30);
+oci_bind_by_name($cursor, ':state', $state, 30);
+oci_bind_by_name($cursor, ':zipcode', $zipcode, 30);
 oci_bind_by_name($cursor, ':sttype', $sttype, 30);
-oci_bind_by_name($cursor, ':ststatus', $ststatus, 30);
+oci_bind_by_name($cursor, ':status', $ststatus, 30);
 oci_bind_by_name($cursor, ':id', $id, 30);
 
 $fname = $_POST["fname"];
 $lname = $_POST["lname"];
-$stage = $_POST["stage"];
-$staddress = $_POST["staddress"];
+$stage = $_POST["age"];
+$street = $_POST["street"];
+$city = $_POST["city"];
+$state = $_POST["state"];
+$zipcode = $_POST["zipcode"];
 $sttype = $_POST["sttype"];
-$ststatus = $_POST["ststatus"];
+$status = $_POST["status"];
 $id;
 
 $result = oci_execute($cursor, OCI_NO_AUTO_COMMIT);
