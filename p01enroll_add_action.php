@@ -51,7 +51,7 @@ if(($max - $cur) > 0){
 
     ini_set( "display_errors", 0);  
 
-    $connection = oci_connect ("gq051", "nhmrse", "gqiannew2:1521/pdborcl");
+    $connection = oci_connect ("gq055", "ujkorp", "gqiannew2:1521/pdborcl");
     if($connection == false){
       // failed to connect
       display_oracle_error_message(null);

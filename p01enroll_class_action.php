@@ -1,7 +1,7 @@
 <?
 include "p01utility_functions.php";
 
-$connection = oci_connect ("gq051", "nhmrse", "gqiannew2:1521/pdborcl");
+$connection = oci_connect ("gq055", "ujkorp", "gqiannew2:1521/pdborcl");
 if ($connection == false){
    echo oci_error()."<BR>";
    exit;
