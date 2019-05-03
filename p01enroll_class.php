@@ -22,9 +22,9 @@ echo "<br>";
 
 
 echo("
-	<form method=\"post\" action=\"enroll.php?sessionid=$sessionid\">
-	Class ID: <input type=\"text\" size=\"6\" maxlength=\"6\" name=\"crn\"> 
-	Section ID: <input type=\"text\" size=\"6\" maxlength=\"6\" name=\"sectid\"> 
+	<form method=\"post\" action=\"p01enroll_class.php?sessionid=$sessionid\">
+	Class ID: <input type=\"text\" size=\"6\" maxlength=\"6\" name=\"q_crn\"> 
+	Section ID: <input type=\"text\" size=\"6\" maxlength=\"6\" name=\"q_sectid\"> 
 	<input type=\"submit\" value=\"Search\">
 	</form>
 	");
@@ -43,17 +43,19 @@ echo("
 	<input type=\"submit\" value=\"Add Classes\">
 	</form>
 	");
-$crn = $_POST["crn"];
-$sectid = $_POST["sectid"];
+	
+// Interpret the query requirements	
+$q_crn = $_POST["q_crn"];
+$q_sectid = $_POST["q_sectid"];
 
-$whereClause = " sem = 2020";
+$whereClause = "1=1";
 
-if(isset($crn) and trim($crn)!= ""){
-	$whereClause .= " and crn like '%$crn%'";
+if(isset($q_crn) and trim($q_crn)!= ""){
+	$whereClause .= " and crn like '%$q_crn%'";
 }
 
-if(isset($sectid) and trim($sectid)!= ""){
-	$whereClause .= " and sectid like '%$sectid%'";
+if(isset($q_sectid) and trim($q_sectid)!= ""){
+	$whereClause .= " and sectid like '%$q_sectid%'";
 }
 
 $sql = "select crn, ctitle, credit, sem, 
