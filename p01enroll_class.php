@@ -30,16 +30,8 @@ echo("
 	");
 echo("
 	<form method=\"post\" action=\"p01enroll_class_action.php?sessionid=$sessionid\">
-	ClassID: <input type=\"text\" value = \"$crn1\" size=\"6\" maxlength=\"6\" name=\"crn1\"> 
-	SectionID: <input type=\"text\" value = \"$sectid1\" size=\"6\" maxlength=\"6\" name=\"sectid1\"> <br>
-	ClassID: <input type=\"text\" value = \"$crn2\" size=\"6\" maxlength=\"6\" name=\"crn2\"> 
-	SectionID: <input type=\"text\" value = \"$sectid2\" size=\"6\" maxlength=\"6\" name=\"sectid2\"> <br>
-	ClassID: <input type=\"text\" value = \"$crn3\" size=\"6\" maxlength=\"6\" name=\"crn3\"> 
-	SectionID: <input type=\"text\" value = \"$sectid3\" size=\"6\" maxlength=\"6\" name=\"sectid3\"> <br>
-	ClassID: <input type=\"text\" value = \"$crn4\" size=\"6\" maxlength=\"6\" name=\"crn4\"> 
-	SectionID: <input type=\"text\" value = \"$sectid4\" size=\"6\" maxlength=\"6\" name=\"sectid4\"> <br>
-	ClassID: <input type=\"text\" value = \"$crn5\" size=\"6\" maxlength=\"6\" name=\"crn5\"> 
-	SectionID: <input type=\"text\" value = \"$sectid5\" size=\"6\" maxlength=\"6\" name=\"sectid5\"> <br>
+	ClassID: <input type=\"text\" value = \"$crn\" size=\"6\" maxlength=\"6\" name=\"crn\"> 
+	SectionID: <input type=\"text\" value = \"$sectid\" size=\"6\" maxlength=\"6\" name=\"sectid\"> 
 	<input type=\"submit\" value=\"Add Classes\">
 	</form>
 	");

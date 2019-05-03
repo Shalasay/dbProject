@@ -68,7 +68,7 @@ create table p01enrolledcourses (
 	sem number(4) not null,
 	sectid number(4) not null,
 	enrollflag varchar2(1),
-	grade number(1),
+	grade number(3),
 	primary key (stid, crn, sectid, sem),
 	foreign key (stid) references p01student ON DELETE CASCADE,
 	foreign key (crn,sectid, sem) references p01gensection(crn, sectid, sem)
@@ -78,31 +78,6 @@ create table my_tmp(
 	my_grade number,
 	my_credits number
 );
-
-create or replace procedure create_new_id(
-	i_fname in varchar2,
-	i_lname in varchar2, 
-	i_stage in number, 
-	i_staddress in number, 
-	i_sttype in varchar2, 
-	i_ststatus in varchar2, 
-	i_id out varchar2
-	)
-	is
-	i_count number;
-	begin
-		lock table p01users in row exclusive mode nowait;
-		lock table p01student in row exclusive mode nowait;
-		select count(*) into i_count from p01student;
-		i_count := i_count + 1;
-		i_id := substr(i_fname, 1, 1) || substr(i_lname, 1, 1) || to_char(i_count, 'FM000000');
-		insert into p01users values (i_id, i_lname, '0', '1');
-		insert into p01student (stid, fname, lname, age, streetNumber, typeflag, status, clientid) 
-						values (i_id, i_fname, i_lname, i_stage, i_staddress, i_sttype, i_ststatus, i_id);
-		commit;
-	end;
-/
-		
 
 --update_gpa procedure
 create or replace procedure update_gpa(student_id in varchar2) as
@@ -171,7 +146,10 @@ insert into p01gensection values ('ma1111', 0001, 2021, 1300,  3, 0, TO_DATE('20
 insert into p01gensection values ('ma2111', 0001, 2021, 1400,  2, 0, TO_DATE('20211101', 'yyyymmdd')); 
 insert into p01gensection values ('ma2211', 0001, 2021, 1500,  1, 0, TO_DATE('20211225', 'yyyymmdd'));
 --student enrolled into a course
-insert into p01enrolledcourses values ( 'stu001', 'cs1111', 2020, 0001, 0, 1);
+insert into p01enrolledcourses values ( 'stu001', 'cs1111', 2020, 0001, 0, 100);
+insert into p01enrolledcourses values ( 'stu001', 'cs2111', 2020, 0001, 0, 70);
+insert into p01enrolledcourses values ( 'stu001', 'cs2211', 2020, 0001, 0, 80);
+
 -- insert into p01enrolledcourses values ( 'stu002', 'cs1111', 2020, 0001, 0, 1);
 -- insert into p01enrolledcourses values ( 'stu002', 'cs2111', 2020, 0001, 0, 4);
 i
@@ -182,23 +160,19 @@ i
 
 create or replace procedure check_deadline
 	(my_crn in varchar2, my_sectid in varchar2, my_sem in number, my_error out varchar2)
-	is
+	AS
 	my_date date := CURRENT_DATE;
 	my_deadline date;
-
 	begin
 		select deadline into my_deadline from p01gensection
 			where crn = my_crn and sectid = my_sectid and sem = my_sem;
 		IF my_deadline < my_date THEN
-			dbms_output.put_line('deadline passed error');
 			my_error := 'Enroll deadline passed for class ' 
 				|| my_crn
-				|| ' section '
 				|| my_sectid;
 		END IF;
 	END;
 	/
-
 
 create or replace procedure check_passed_course
 	(my_crn in varchar2, my_stid in varchar2, my_error out varchar2)

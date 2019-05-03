@@ -1,19 +1,22 @@
 <?
 include "p01utility_functions.php";
 
-$connection = oci_connect ("gq055", "ujkorp", "gqiannew2:1521/pdborcl");
+$connection = oci_connect ("gq051", "nhmrse", "gqiannew2:1521/pdborcl");
 if ($connection == false){
-   // For oci_connect errors, no handle needed
-   $e = oci_error(); 
-   die($e['message']);
+	echo"<BR>";
+   echo oci_error()."<BR>";
+   exit;
 }
-
 $formtype = 's';
 $sessionid =$_GET["sessionid"];
 $sem = 2019;
 verify_session($sessionid, $formtype);
 
-
+$crn = $_POST['crn'];
+$sectid =$_POST['sectid'];
+echo($crn);
+echo"<br>";
+echo($sectid);
 echo("<br>");
 $sql = "select stid from p01student natural join p01myclientsession where sessionid = '$sessionid'";
 echo($sql);
@@ -35,41 +38,44 @@ $final_error;
 
 $count = 1;
 
-for($i = 1; $i < 6; $i++){
-	 $crn=$_POST["crn$i"];
-	 $sectid=$_POST["sectid$i"];
-	echo("<br>");
-	echo($crn); 	echo("<br>");
-	echo($sectid); 
-	echo"<BR>";
-	if(isset($crn) and trim($crn)!= ""){
-		if(isset($sectid) and trim($sectid)!= ""){
-			//check deadline
-			$sql = "begin check_deadline(:crn, :sectid, :sem, :error); end;";
-			echo($sql);
-			$cursor = oci_parse($connection, $sql);
-			if($cursor == false){
-				echo oci_error($connection)."<br>";
-				exit;
-			}
-				oci_bind_by_name($cursor, ":error", $error,100	);
-				oci_bind_by_name($cursor, ":crn", $crn, 6);
-				oci_bind_by_name($cursor, ":sectid", $sectid, 4);
-				oci_bind_by_name($cursor, ":sem", $sem, 4);
-				oci_bind_by_name($cursor, ":stid", $stid, 8);
+// for($i = 1; $i < 6; $i++){
+	 // $crn=$_POST["crn".$i];
+	 // $sectid=$_POST["sectid".$i];
+	// echo("<br>");
+	// echo($crn); 	echo("<br>");
+	// echo($sectid); 
+	// echo"<BR>";
+	// echo($i);
+	// echo(" Count <br>");
+	// if(isset($crn) and trim($crn)!= ""){
+		// if(isset($sectid) and trim($sectid)!= ""){
+			// //check deadline
+		
+			// $sql = "begin check_deadline(:crn, :sectid, :sem, :error); end;";
+			// echo($sql);
+			// $cursor = oci_parse($connection, $sql);
+			// if($cursor == false){
+				// echo oci_error($connection)."<br>";
+				// exit;
+			// }
+				// oci_bind_by_name($cursor, ':error', $error,200);
+				// oci_bind_by_name($cursor, ':crn', $crn, 6);
+				 // oci_bind_by_name($cursor, ':sectid', $sectid, 4);
+				 // oci_bind_by_name($cursor, ':sem', $sem, 4);
+				// // oci_bind_by_name($cursor, ':stid', $stid, 8);
+			// echo($crn);
+			// $result = oci_execute($cursor, OCI_NO_AUTO_COMMIT);
+			// if($result == false){
+				// display_oracle_error_message($cursor);
+				// echo("ERROR with DEADLINE       <br>");
+				// echo oci_error($cursor)."<BR>";
+				// exit;
+			// }
+			// // oci_free_statement($cursor);
+			// //end deadline check
+			// echo("past deadline");
 
-			$result = oci_execute($cursor, OCI_NO_AUTO_COMMIT);
-			if($result == false){
-				display_oracle_error_message($cursor);
-				echo("ERROR with DEADLINE");
-				echo oci_error($cursor)."<BR>";
-				exit;
-			}
-			oci_free_statement($cursor);
-			//end deadline check
-			echo("past deadline");
-
-			//check passed course
+			// //check passed course
 			// if(isset($error) and trim($error)!=""){//previous errors so do not enroll
 				// //continue; 
 			// }else{
@@ -153,16 +159,16 @@ for($i = 1; $i < 6; $i++){
 				// $final_error .= "<br>" . $error;
 				// $error = "";
 			// }
-		}//end isset
-	}//end isset
-}//end for loop
+		// }//end isset sectid
+	// }//end isset crn
+// }//end for loop
 
-// if(isset($final_error) and trim($final_error)!= ""){
-	// echo("ERROR:");
-	// echo($final_error);
-	// die("<br>Click <A HREF = \"p01enroll.php?sessionid=$sessionid\">here</A> to go back.");
-// }
+if(isset($final_error) and trim($final_error)!= ""){
+	echo("ERROR:");
+	echo($final_error);
+	die("<br>Click <A HREF = \"p01enroll.php?sessionid=$sessionid\">here</A> to go back.");
+}
 
 oci_close($connection);
-Header("Location:p01enroll.php?sessionid=$sessionid");
+// Header("Location:p01enroll.php?sessionid=$sessionid");
 ?>
